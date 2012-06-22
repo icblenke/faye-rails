@@ -20,12 +20,16 @@ module FayeRails
       def monitor(event, &block)
         raise ArgumentError, "Unknown event #{event.inspect}" unless [:subscribe,:unsubscribe,:publish].member? event
 
-        FayeRails.server(endpoint).bind(event) do |*args|
-          Monitor.new.tap do |m|
-            m.client_id = args.shift
-            m.channel = args.shift
-            m.data = args.shift
-            m.instance_eval(&block) if m.channel == channel
+        server_endpoint=FayeRails.server(endpoint)
+	if server_endpoint
+	  server_endpoint.bind(event) do |*args|
+          FayeRails.server(endpoint).bind(event) do |*args|
+            Monitor.new.tap do |m|
+              m.client_id = args.shift
+              m.channel = args.shift
+              m.data = args.shift
+              m.instance_eval(&block) if m.channel == channel
+            end
           end
         end
       end
