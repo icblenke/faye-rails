@@ -23,12 +23,13 @@ module FayeRails
         server_endpoint=FayeRails.server(endpoint)
 	if server_endpoint
 	  server_endpoint.bind(event) do |*args|
-          FayeRails.server(endpoint).bind(event) do |*args|
-            Monitor.new.tap do |m|
-              m.client_id = args.shift
-              m.channel = args.shift
-              m.data = args.shift
-              m.instance_eval(&block) if m.channel == channel
+            FayeRails.server(endpoint).bind(event) do |*args|
+              Monitor.new.tap do |m|
+                m.client_id = args.shift
+                m.channel = args.shift
+                m.data = args.shift
+                m.instance_eval(&block) if m.channel == channel
+              end
             end
           end
         end
