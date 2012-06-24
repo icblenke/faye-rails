@@ -23,7 +23,9 @@ if defined? ActionDispatch::Routing
 
         Faye::WebSocket.load_adapter(options.delete(:server))
 
-        adapter = FayeRails::RackAdapter.new(options)
+        adapter=FayeRails.server if FayeRails.server
+        adapter=FayeRails::RackAdapter.new(options) if ! adapter
+
         adapter.instance_eval(&block) if block.respond_to? :call
 
         match options[:mount] => adapter
@@ -40,8 +42,10 @@ if defined? Rails::Application::RoutesReloader
   class Rails::Application::RoutesReloader
 
     def clear_with_faye_servers!
+      server=FayeRails.servers.first
       FayeRails.servers.clear!
       clear_without_faye_servers!
+      FayeRails.servers << server if server
     end
 
     alias_method_chain :clear!, :faye_servers

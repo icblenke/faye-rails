@@ -3,6 +3,7 @@ ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../dummy/spec/spec_helper.rb', __FILE__)
 require 'database_cleaner'
+require 'eventmachine'
 require 'fiber'
 
 Thread.new do
